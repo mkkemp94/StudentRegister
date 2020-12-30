@@ -1,25 +1,28 @@
 package com.mkemp.studentregister;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mkemp.studentregister.adapter.StudentAdapter;
+import com.mkemp.studentregister.db.StudentDatabase;
 import com.mkemp.studentregister.db.entity.Student;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -29,6 +32,9 @@ public class MainActivity extends AppCompatActivity
     public static final String ADD_NEW_STUDENT_NAME_EXTRA = "add_student_name_extra";
     public static final String ADD_NEW_STUDENT_EMAIL_EXTRA = "add_student_email_extra";
     public static final String ADD_NEW_STUDENT_COUNTRY_EXTRA = "add_student_country_extra";
+    
+    private StudentDatabase studentDatabase;
+    private StudentAdapter studentAdapter;
     
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -49,13 +55,16 @@ public class MainActivity extends AppCompatActivity
             }
         });
     
+        studentDatabase = Room.databaseBuilder(
+                getApplicationContext(), StudentDatabase.class,
+                "StudentDB"
+        ).build();
+    
+        new GetAllStudentsTask().execute();
+        
         RecyclerView recyclerViewStudents = findViewById(R.id.rvStudents);
-        
-        studentArrayList.add(
-                new Student(0, "Me", "Myself", "I", new SimpleDateFormat().format(new Date()))
-        );
-        
-        StudentAdapter studentAdapter = new StudentAdapter(studentArrayList);
+    
+        studentAdapter = new StudentAdapter(studentArrayList);
         recyclerViewStudents.setAdapter(studentAdapter);
         
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -107,11 +116,57 @@ public class MainActivity extends AppCompatActivity
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, d MMM yyyy");
             String currentDateAndTime = simpleDateFormat.format(new Date());
     
-            Log.i("MainActivity", "Added new student");
-            Log.i("MainActivity", "Name = " + studentName);
-            Log.i("MainActivity", "Email = " + studentEmail);
-            Log.i("MainActivity", "Country = " + studentCountry);
-            Log.i("MainActivity", "Time = " + currentDateAndTime);
+            addStudent(studentName, studentEmail, studentCountry, currentDateAndTime);
+        }
+    }
+    
+    private void addStudent(String name, String email, String country, String registrationTime)
+    {
+        new AddStudentToDBTask().execute(
+                new Student(0, name, email, country, registrationTime)
+        );
+    }
+    
+    private class GetAllStudentsTask extends AsyncTask<Void, Void, Void>
+    {
+        @Override
+        protected Void doInBackground(Void... voids)
+        {
+            List<Student> list = studentDatabase.getStudentDao().getStudents();
+            studentArrayList.addAll(list);
+            return null;
+        }
+    
+        @Override
+        protected void onPostExecute(Void aVoid)
+        {
+            super.onPostExecute(aVoid);
+            studentAdapter.notifyDataSetChanged();
+        }
+    }
+    
+    private class AddStudentToDBTask extends AsyncTask<Student, Void, Void>
+    {
+        @Override
+        protected Void doInBackground(Student... students)
+        {
+            long id = studentDatabase.getStudentDao().addStudent(students[0]);
+            
+            Student student = studentDatabase.getStudentDao().getStudent(id);
+            
+            if (student != null)
+            {
+                studentArrayList.add(0, student);
+            }
+            
+            return null;
+        }
+    
+        @Override
+        protected void onPostExecute(Void aVoid)
+        {
+            super.onPostExecute(aVoid);
+            studentAdapter.notifyDataSetChanged();
         }
     }
 }
