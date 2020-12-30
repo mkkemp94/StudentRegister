@@ -55,8 +55,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
         holder.textViewName.setText(studentList.get(position).getName());
         holder.textViewEmail.setText(studentList.get(position).getEmail());
         holder.textViewCountry.setText(studentList.get(position).getCountry());
-        // TODO Time
-//        holder.textViewRegistrationTime.setText(studentList.get(position).getRegistrationTime());
+        holder.textViewRegistrationTime.setText(studentList.get(position).getRegistrationTime());
     }
     
     @Override

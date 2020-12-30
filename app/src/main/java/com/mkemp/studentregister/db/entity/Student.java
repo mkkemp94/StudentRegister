@@ -20,12 +20,16 @@ public class Student
     @ColumnInfo(name = "student_country")
     private String country;
     
-    public Student(long id, String name, String email, String country)
+    @ColumnInfo(name = "student_registration_time")
+    private String registrationTime;
+    
+    public Student(long id, String name, String email, String country, String registrationTime)
     {
         this.id = id;
         this.name = name;
         this.email = email;
         this.country = country;
+        this.registrationTime = registrationTime;
     }
     
     public String getName()
@@ -66,5 +70,15 @@ public class Student
     public void setId(long id)
     {
         this.id = id;
+    }
+    
+    public String getRegistrationTime()
+    {
+        return registrationTime;
+    }
+    
+    public void setRegistrationTime(String registrationTime)
+    {
+        this.registrationTime = registrationTime;
     }
 }

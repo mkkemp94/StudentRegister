@@ -1,16 +1,19 @@
 package com.mkemp.studentregister;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.mkemp.studentregister.adapter.StudentAdapter;
 import com.mkemp.studentregister.db.entity.Student;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -21,6 +24,11 @@ import androidx.recyclerview.widget.RecyclerView;
 public class MainActivity extends AppCompatActivity
 {
     private ArrayList<Student> studentArrayList = new ArrayList<>();
+    
+    public static final int ADD_NEW_STUDENT_REQUEST_CODE = 2457;
+    public static final String ADD_NEW_STUDENT_NAME_EXTRA = "add_student_name_extra";
+    public static final String ADD_NEW_STUDENT_EMAIL_EXTRA = "add_student_email_extra";
+    public static final String ADD_NEW_STUDENT_COUNTRY_EXTRA = "add_student_country_extra";
     
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -37,15 +45,14 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                goToAddNewStudentActivity();
             }
         });
     
         RecyclerView recyclerViewStudents = findViewById(R.id.rvStudents);
         
         studentArrayList.add(
-                new Student(0, "Me", "Myself", "I")
+                new Student(0, "Me", "Myself", "I", new SimpleDateFormat().format(new Date()))
         );
         
         StudentAdapter studentAdapter = new StudentAdapter(studentArrayList);
@@ -78,5 +85,33 @@ public class MainActivity extends AppCompatActivity
         }
         
         return super.onOptionsItemSelected(item);
+    }
+    
+    private void goToAddNewStudentActivity()
+    {
+        Intent intent = new Intent(this, AddNewStudentActivity.class);
+        startActivityForResult(intent, ADD_NEW_STUDENT_REQUEST_CODE);
+    }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        
+        if (requestCode == ADD_NEW_STUDENT_REQUEST_CODE)
+        {
+            String studentName = data.getStringExtra(ADD_NEW_STUDENT_NAME_EXTRA);
+            String studentEmail = data.getStringExtra(ADD_NEW_STUDENT_EMAIL_EXTRA);
+            String studentCountry = data.getStringExtra(ADD_NEW_STUDENT_COUNTRY_EXTRA);
+    
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, d MMM yyyy");
+            String currentDateAndTime = simpleDateFormat.format(new Date());
+    
+            Log.i("MainActivity", "Added new student");
+            Log.i("MainActivity", "Name = " + studentName);
+            Log.i("MainActivity", "Email = " + studentEmail);
+            Log.i("MainActivity", "Country = " + studentCountry);
+            Log.i("MainActivity", "Time = " + currentDateAndTime);
+        }
     }
 }
