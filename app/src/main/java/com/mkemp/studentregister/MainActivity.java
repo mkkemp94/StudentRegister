@@ -7,17 +7,27 @@ import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.mkemp.studentregister.adapter.StudentAdapter;
+import com.mkemp.studentregister.db.entity.Student;
+
+import java.util.ArrayList;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class MainActivity extends AppCompatActivity
 {
+    private ArrayList<Student> studentArrayList = new ArrayList<>();
+    
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        DataBindingUtil.setContentView(this, R.layout.activity_main);
+        
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         
@@ -31,6 +41,18 @@ public class MainActivity extends AppCompatActivity
                         .setAction("Action", null).show();
             }
         });
+    
+        RecyclerView recyclerViewStudents = findViewById(R.id.rvStudents);
+        
+        studentArrayList.add(
+                new Student(0, "Me", "Myself", "I")
+        );
+        
+        StudentAdapter studentAdapter = new StudentAdapter(studentArrayList);
+        recyclerViewStudents.setAdapter(studentAdapter);
+        
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerViewStudents.setLayoutManager(layoutManager);
     }
     
     @Override
