@@ -9,6 +9,7 @@ import com.mkemp.studentregister.R;
 import com.mkemp.studentregister.db.entity.Student;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,9 +18,10 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
 {
     private ArrayList<Student> studentList;
     
-    public StudentAdapter(ArrayList<Student> studentList)
+    public void setStudents(List<Student> students)
     {
-        this.studentList = studentList;
+        studentList.addAll(students);
+        notifyDataSetChanged();
     }
     
     public static class StudentViewHolder extends RecyclerView.ViewHolder
@@ -61,6 +63,13 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
     @Override
     public int getItemCount()
     {
-        return studentList.size();
+        if (studentList != null)
+        {
+            return studentList.size();
+        }
+        else
+        {
+            return 0;
+        }
     }
 }

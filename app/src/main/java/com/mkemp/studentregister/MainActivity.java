@@ -15,7 +15,6 @@ import com.mkemp.studentregister.db.entity.Student;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -59,16 +58,16 @@ public class MainActivity extends AppCompatActivity
                 getApplicationContext(), StudentDatabase.class,
                 "StudentDB"
         ).build();
-    
-        new GetAllStudentsTask().execute();
         
         RecyclerView recyclerViewStudents = findViewById(R.id.rvStudents);
     
-        studentAdapter = new StudentAdapter(studentArrayList);
+        studentAdapter = new StudentAdapter();
         recyclerViewStudents.setAdapter(studentAdapter);
         
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerViewStudents.setLayoutManager(layoutManager);
+    
+        loadData();
     }
     
     @Override
@@ -120,6 +119,11 @@ public class MainActivity extends AppCompatActivity
         }
     }
     
+    private void loadData()
+    {
+        new GetAllStudentsTask().execute();
+    }
+    
     private void addStudent(String name, String email, String country, String registrationTime)
     {
         new AddStudentToDBTask().execute(
@@ -132,8 +136,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected Void doInBackground(Void... voids)
         {
-            List<Student> list = studentDatabase.getStudentDao().getStudents();
-            studentArrayList.addAll(list);
+            studentArrayList = (ArrayList<Student>) studentDatabase.getStudentDao().getStudents();
             return null;
         }
     
@@ -141,7 +144,7 @@ public class MainActivity extends AppCompatActivity
         protected void onPostExecute(Void aVoid)
         {
             super.onPostExecute(aVoid);
-            studentAdapter.notifyDataSetChanged();
+            studentAdapter.setStudents(studentArrayList);
         }
     }
     
@@ -150,15 +153,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected Void doInBackground(Student... students)
         {
-            long id = studentDatabase.getStudentDao().addStudent(students[0]);
-            
-            Student student = studentDatabase.getStudentDao().getStudent(id);
-            
-            if (student != null)
-            {
-                studentArrayList.add(0, student);
-            }
-            
+            studentDatabase.getStudentDao().addStudent(students[0]);
             return null;
         }
     
@@ -166,7 +161,24 @@ public class MainActivity extends AppCompatActivity
         protected void onPostExecute(Void aVoid)
         {
             super.onPostExecute(aVoid);
-            studentAdapter.notifyDataSetChanged();
+            loadData();
+        }
+    }
+    
+    private class DeleteStudentFromDBTask extends AsyncTask<Student, Void, Void>
+    {
+        @Override
+        protected Void doInBackground(Student... students)
+        {
+            studentDatabase.getStudentDao().deleteStudent(students[0]);
+            return null;
+        }
+        
+        @Override
+        protected void onPostExecute(Void aVoid)
+        {
+            super.onPostExecute(aVoid);
+            loadData();
         }
     }
 }
