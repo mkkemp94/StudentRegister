@@ -1,5 +1,6 @@
 package com.mkemp.studentregister;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -7,8 +8,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mkemp.studentregister.adapter.StudentAdapter;
+import com.mkemp.studentregister.databinding.ActivityMainBinding;
 import com.mkemp.studentregister.db.StudentDatabase;
 import com.mkemp.studentregister.db.entity.Student;
 
@@ -18,7 +19,6 @@ import java.util.Date;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -27,6 +27,9 @@ import androidx.room.Room;
 
 public class MainActivity extends AppCompatActivity
 {
+    private ActivityMainBinding activityMainBinding;
+    public MainActivityClickHandlers handlers;
+    
     private ArrayList<Student> studentArrayList = new ArrayList<>();
     
     public static final int ADD_NEW_STUDENT_REQUEST_CODE = 2457;
@@ -41,20 +44,11 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        DataBindingUtil.setContentView(this, R.layout.activity_main);
+        activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                goToAddNewStudentActivity();
-            }
-        });
+        setSupportActionBar(activityMainBinding.toolbar);
+        handlers = new MainActivityClickHandlers(this);
+        activityMainBinding.setOnClickHandlers(handlers);
     
         studentDatabase = Room.databaseBuilder(
                 getApplicationContext(), StudentDatabase.class,
@@ -88,6 +82,22 @@ public class MainActivity extends AppCompatActivity
         }).attachToRecyclerView(recyclerViewStudents);
     }
     
+    public class MainActivityClickHandlers
+    {
+        Context context;
+    
+        public MainActivityClickHandlers(Context context)
+        {
+            this.context = context;
+        }
+    
+        public void onFloatingActionButtonClicked(View view)
+        {
+            Intent intent = new Intent(context, AddNewStudentActivity.class);
+            startActivityForResult(intent, ADD_NEW_STUDENT_REQUEST_CODE);
+        }
+    }
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -111,12 +121,6 @@ public class MainActivity extends AppCompatActivity
         }
         
         return super.onOptionsItemSelected(item);
-    }
-    
-    private void goToAddNewStudentActivity()
-    {
-        Intent intent = new Intent(this, AddNewStudentActivity.class);
-        startActivityForResult(intent, ADD_NEW_STUDENT_REQUEST_CODE);
     }
     
     @Override
