@@ -8,7 +8,6 @@ import android.widget.TextView;
 import com.mkemp.studentregister.R;
 import com.mkemp.studentregister.db.entity.Student;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -16,11 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentViewHolder>
 {
-    private ArrayList<Student> studentList;
+    private List<Student> studentList;
     
     public void setStudents(List<Student> students)
     {
-        studentList.addAll(students);
+        this.studentList = students;
         notifyDataSetChanged();
     }
     

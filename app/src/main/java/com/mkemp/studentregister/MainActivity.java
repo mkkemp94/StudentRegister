@@ -16,9 +16,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
@@ -68,6 +70,22 @@ public class MainActivity extends AppCompatActivity
         recyclerViewStudents.setLayoutManager(layoutManager);
     
         loadData();
+    
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT)
+        {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target)
+            {
+                return false;
+            }
+    
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction)
+            {
+                Student studentToDelete = studentArrayList.get((viewHolder.getAdapterPosition()));
+                deleteStudent(studentToDelete);
+            }
+        }).attachToRecyclerView(recyclerViewStudents);
     }
     
     @Override
@@ -129,6 +147,11 @@ public class MainActivity extends AppCompatActivity
         new AddStudentToDBTask().execute(
                 new Student(0, name, email, country, registrationTime)
         );
+    }
+    
+    private void deleteStudent(Student student)
+    {
+        new DeleteStudentFromDBTask().execute(student);
     }
     
     private class GetAllStudentsTask extends AsyncTask<Void, Void, Void>
