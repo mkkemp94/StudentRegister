@@ -1,11 +1,14 @@
 package com.mkemp.studentregister.db.entity;
 
+import androidx.databinding.BaseObservable;
+import androidx.databinding.Bindable;
+import androidx.databinding.library.baseAdapters.BR;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "students")
-public class Student
+public class Student extends BaseObservable
 {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "student_id")
@@ -32,6 +35,12 @@ public class Student
         this.registrationTime = registrationTime;
     }
     
+    public Student()
+    {
+    
+    }
+    
+    @Bindable
     public String getName()
     {
         return name;
@@ -40,8 +49,10 @@ public class Student
     public void setName(String name)
     {
         this.name = name;
+        notifyPropertyChanged(BR.name);
     }
-    
+  
+    @Bindable
     public String getEmail()
     {
         return email;
@@ -50,8 +61,10 @@ public class Student
     public void setEmail(String email)
     {
         this.email = email;
+        notifyPropertyChanged(BR.email);
     }
-    
+  
+    @Bindable
     public String getCountry()
     {
         return country;
@@ -60,8 +73,10 @@ public class Student
     public void setCountry(String country)
     {
         this.country = country;
+        notifyPropertyChanged(BR.country);
     }
     
+    @Bindable
     public long getId()
     {
         return id;
@@ -70,8 +85,10 @@ public class Student
     public void setId(long id)
     {
         this.id = id;
+        notifyPropertyChanged(BR.id);
     }
     
+    @Bindable
     public String getRegistrationTime()
     {
         return registrationTime;
@@ -80,5 +97,6 @@ public class Student
     public void setRegistrationTime(String registrationTime)
     {
         this.registrationTime = registrationTime;
+        notifyPropertyChanged(BR.registrationTime);
     }
 }

@@ -3,6 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name="onClickHandlers"
+            type="com.mkemp.studentregister.AddNewStudentActivity.AddNewStudentActivityClickHandlers" />
+        <variable
+            name="student"
+            type="com.mkemp.studentregister.db.entity.Student" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -22,6 +31,7 @@
             android:text="@string/submit_button"
             android:textColorLink="@color/colorPrimaryDark"
             android:textSize="25sp"
+            android:onClick="@{onClickHandlers::onSubmitClicked}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -30,6 +40,7 @@
 
         <EditText
             android:id="@+id/et_name"
+            android:text="@={student.name}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -49,6 +60,7 @@
 
         <EditText
             android:id="@+id/et_email"
+            android:text="@={student.email}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -68,6 +80,7 @@
 
         <EditText
             android:id="@+id/et_country"
+            android:text="@={student.country}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
