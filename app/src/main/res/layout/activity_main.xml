@@ -37,7 +37,8 @@
             android:onClick="@{onClickHandlers::onFloatingActionButtonClicked}"
             app:srcCompat="@android:drawable/ic_dialog_email" />
 
-        <include layout="@layout/content_main" />
+        <include layout="@layout/content_main"
+            android:id="@+id/layout_content_main"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

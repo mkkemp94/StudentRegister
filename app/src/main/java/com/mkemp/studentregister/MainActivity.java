@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity
                 "StudentDB"
         ).build();
         
-        RecyclerView recyclerViewStudents = findViewById(R.id.rvStudents);
+        RecyclerView recyclerViewStudents = activityMainBinding.layoutContentMain.rvStudents;
     
         studentAdapter = new StudentAdapter();
         recyclerViewStudents.setAdapter(studentAdapter);
